@@ -9,6 +9,8 @@
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles.css">
   <script src="calendar.js" defer></script>
+  <script src="statistics.js" defer></script>
+  <script src="statistics-view.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -18,11 +20,12 @@
         <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 3v4m10-4v4M4 10h16M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="m9 15 2 2 4-4"/></svg></div>
         <h1>个人记录<span class="title-dot">.</span></h1>
       </div>
-      <p class="subtitle">简单记录，不必多想。</p>
+      <button id="view-toggle" class="view-toggle" type="button" aria-controls="statistics-view records-view" aria-pressed="false">统计</button>
     </header>
 
     <p id="storage-error" class="error-banner" role="alert" hidden></p>
 
+    <div id="records-view">
     <section class="calendar-card" aria-label="打卡日历">
       <div class="calendar-toolbar">
         <div class="month-heading"><h2 id="month-title" aria-live="polite"></h2><p id="month-subtitle" lang="en"></p></div>
@@ -49,6 +52,51 @@
         <p>这天还没有记录</p><span>每一次记录，都只属于你。</span>
       </div>
       <ul id="records-list" class="records-list"></ul>
+    </section>
+
+    </div>
+
+    <section id="statistics-view" aria-labelledby="stats-title" hidden>
+      <div class="stats-heading"><h2 id="stats-title">记录统计</h2><p>只是记录，了解自己的节奏。</p></div>
+      <div class="stats-period-switch" role="group" aria-label="统计周期">
+        <button type="button" data-stats-period="week" aria-pressed="false">周</button>
+        <button type="button" data-stats-period="month" aria-pressed="true">月</button>
+        <button type="button" data-stats-period="year" aria-pressed="false">年</button>
+      </div>
+      <div class="stats-navigation">
+        <button id="stats-prev" class="icon-button" type="button" aria-label="上一月"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5"/></svg></button>
+        <div class="stats-range-heading"><h3 id="stats-range" aria-live="polite"></h3><p id="stats-period-context"></p></div>
+        <button id="stats-next" class="icon-button" type="button" aria-label="下一月"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 7 5 5-5 5"/></svg></button>
+      </div>
+      <div class="stats-current-row"><button id="stats-current" class="today-button" type="button" hidden>回到本月</button></div>
+      <dl class="stats-summary" aria-label="统计概览">
+        <div><dt>记录次数</dt><dd><span id="stats-total">0</span><small>次</small></dd></div>
+        <div><dt>有记录天数</dt><dd><span id="stats-active-days">0</span><small>天</small></dd></div>
+        <div><dt>日均次数</dt><dd><span id="stats-average">0.00</span><small>次</small></dd></div>
+      </dl>
+      <p id="stats-average-note" class="stats-explanation"></p>
+      <section class="stats-chart-card" aria-label="记录图表">
+        <div class="stats-chart-tabs" role="group" aria-label="图表类型">
+          <button id="stats-frequency-tab" type="button" data-stats-chart="frequency" aria-pressed="true">每日次数</button>
+          <button type="button" data-stats-chart="time" aria-pressed="false">时间分布</button>
+        </div>
+        <div id="stats-empty" class="stats-empty" hidden><p id="stats-empty-title"></p><span id="stats-empty-description"></span></div>
+        <div id="stats-frequency">
+          <p class="stats-axis-unit">次数</p>
+          <div id="stats-chart" class="stats-chart" role="group" aria-label="记录次数柱状图">
+            <div id="stats-y-axis" class="stats-y-axis" aria-hidden="true"></div>
+            <div class="stats-plot"><div id="stats-bars" class="stats-bars"></div></div>
+            <div id="stats-x-labels" class="stats-x-labels" aria-hidden="true"></div>
+          </div>
+          <p id="stats-x-unit" class="stats-axis-unit stats-x-unit">日期</p>
+          <p id="stats-future-note" class="stats-explanation">斜纹表示尚未到来的日期，不计入统计。</p>
+          <div class="stats-inspect"><label id="stats-bucket-label" for="stats-bucket-select">查看日期</label><select id="stats-bucket-select" aria-describedby="stats-chart-detail"></select></div>
+          <p id="stats-chart-detail" class="stats-chart-detail" role="status" aria-live="polite"></p>
+        </div>
+        <div id="stats-time" hidden><p class="stats-time-description">按实际发生的本地时间汇总 · 单位：次</p><ul id="stats-time-slots" class="stats-time-slots"></ul></div>
+      </section>
+      <p id="stats-manual-note" class="stats-explanation stats-source-note"></p>
+      <p class="stats-explanation stats-source-note">仅统计当前浏览器保存的数据。</p>
     </section>
 
     <footer><div class="privacy-label"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="10" width="12" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v2"/></svg>只在这里，只属于你</div><p>记录仅保存在当前浏览器，清除浏览器数据后会丢失。</p></footer>

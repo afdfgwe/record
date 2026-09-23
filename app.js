@@ -114,6 +114,7 @@
     renderCalendar();
     renderRecords();
     $('checkin').disabled = busy || !readable;
+    statistics.refresh();
   }
   function goToday() {
     const date = new Date();
@@ -246,6 +247,7 @@
   window.addEventListener('focus', refreshDate);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshDate(); });
   setInterval(refreshDate, 30000);
+  const statistics = window.DiaryStatsView.create(() => ({ records, readable }));
   readLatest();
   render();
 })();

@@ -1,6 +1,6 @@
 # 个人记录
 
-一个无框架、无后端、无外部依赖的个人打卡日历。支持按日期查看、同日多次记录、历史补签和确认删除。
+一个无框架、无后端、无外部依赖的个人打卡日历。支持按日期查看、同日多次记录、历史补签、确认删除，以及周／月／年图表统计。
 
 ## 使用
 
@@ -21,6 +21,32 @@ python -m http.server 5173 --bind 127.0.0.1
 - 保存后停留在所选日期；取消不保存，保存失败会保留输入以便重试。
 - 使用原有存储键，补签记录增加 `source: "manual"` 字段；旧记录无需迁移，按正常打卡显示。
 
+## 统计
+
+点击页面右上角「统计」进入独立视图，点击「返回记录」回到原先选择的日历日期，不挤占首页打卡空间。
+
+- **周／月／年**：默认本月。周从周一开始；可以查看上一周期、下一周期和返回当前周期，不进入未来周期。
+- **统计概览**：记录次数、有记录天数、日均次数。同一天的多条记录分别计次，有记录天数只计一天。
+- **日均口径**：历史周期按完整日历天数计算；当前周期按开始至今天的天数计算（含今天），不以有记录天数为分母。
+- **次数图表**：周展示 7 天、月展示 28–31 天、年展示 12 个月。点击柱子或使用下方选择框查看具体次数和补签数量；未来日期以斜纹区分。
+- **时间分布**：按本地时间分为凌晨（00:00–05:59）、上午（06:00–11:59）、下午（12:00–17:59）、晚上（18:00–23:59）。
+- **补签与更新**：按记录实际发生时间归入对应周期，而不是补签操作当天。新增、补签、删除成功后自动重新汇总；同源其他标签页的存储变化也会更新。
+- 没有记录时显示空状态；无法读取存储时显示「统计暂不可用」，不会误显示为零次。不保存额外统计数据、不上传、不使用外部图表依赖。
+
+## 部署文件
+
+这是静态页面，无需 Node.js 服务或构建。更新 GitHub 或现有静态部署时，需要同时包含以下 **6 个运行文件**：
+
+```text
+index.html
+styles.css
+calendar.js
+statistics.js
+statistics-view.js
+app.js
+```
+
+新增的两个统计脚本不能遗漏。仅替换 HTML 而不上传脚本会导致页面无法正常初始化。更新部署不会主动清除已有记录；但更换域名、协议或浏览器后，原来的本地记录不会自动迁移。
 ## 数据与隐私
 
 - 记录写入当前浏览器的 `localStorage`，键为 `personal-records.v1`，不向服务器上传。
@@ -35,10 +61,10 @@ python -m http.server 5173 --bind 127.0.0.1
 需要 Node.js，无需安装依赖：
 
 ```powershell
-node --test tests/calendar.test.cjs
+node --test tests/calendar.test.cjs tests/statistics.test.cjs
 ```
 
-测试覆盖周一起始月历、闰年与跨年、本地日期与午夜、多条记录排序、数据校验、存储错误、补签日期时间校验及旧数据兼容。
+测试覆盖周一起始月历、闰年与跨年、本地日期与午夜、多条记录排序、数据校验、存储错误、补签日期时间校验及旧数据兼容，以及统计周期边界、闰年、夏令时、分时段计数、补签归属和日均口径。
 
 ### 浏览器验收（可选）
 
@@ -48,7 +74,10 @@ node --test tests/calendar.test.cjs
 npx --yes --package @playwright/cli playwright-cli -s=record-check open http://127.0.0.1:5173
 npx --yes --package @playwright/cli playwright-cli -s=record-check run-code --filename tests/browser-check.js
 npx --yes --package @playwright/cli playwright-cli -s=record-check run-code --filename tests/backfill-browser-check.js
+npx --yes --package @playwright/cli playwright-cli -s=record-check run-code --filename tests/statistics-browser-check.js
 npx --yes --package @playwright/cli playwright-cli -s=record-check close
 ```
 
 浏览器验收覆盖连续点击、刷新保留、历史日期打卡、删除与取消、损坏数据保护、存储读写失败、模拟跨午夜、闰年跨年，以及 320–1280px 布局；截图写入 `output/playwright/`。
+
+测试脚本保存在本地 `tests/` 目录；当前项目的 `.gitignore` 排除了该目录，因此默认不会随 Git 推送。
