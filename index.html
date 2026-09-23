@@ -43,7 +43,7 @@
     </section>
 
     <section class="records-section" aria-labelledby="records-title">
-      <div class="records-heading"><h2 id="records-title"></h2><span id="record-count" class="record-count"></span></div>
+      <div class="records-heading"><h2 id="records-title"></h2><div class="records-actions"><span id="record-count" class="record-count"></span><button id="backfill" class="backfill-button" type="button" hidden>＋ 补签</button></div></div>
       <div id="empty-state" class="empty-state">
         <div class="empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg></div>
         <p>这天还没有记录</p><span>每一次记录，都只属于你。</span>
@@ -55,6 +55,17 @@
   </main>
 
   <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <dialog id="backfill-dialog" aria-labelledby="backfill-title" aria-describedby="backfill-description">
+    <form id="backfill-form" novalidate>
+      <h2 id="backfill-title">补签</h2>
+      <p class="backfill-date">补签日期：<time id="backfill-date"></time></p>
+      <label class="time-label" for="backfill-time">打卡时间</label>
+      <input id="backfill-time" name="time" type="time" step="60" required aria-describedby="backfill-description backfill-error" autofocus>
+      <p id="backfill-description">请选择那次实际发生的时间，精确到分钟。</p>
+      <p id="backfill-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button id="cancel-backfill" class="secondary-button" type="button">取消</button><button id="confirm-backfill" class="primary-button" type="submit">确认补签</button></div>
+    </form>
+  </dialog>
   <dialog id="delete-dialog" aria-labelledby="delete-title" aria-describedby="delete-description">
     <h2 id="delete-title">删除这条记录？</h2>
     <p id="delete-description"></p>

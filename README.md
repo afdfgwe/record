@@ -1,6 +1,6 @@
 # 个人记录
 
-一个无框架、无后端、无外部依赖的个人打卡日历。支持按日期查看、同日多次记录和确认删除。
+一个无框架、无后端、无外部依赖的个人打卡日历。支持按日期查看、同日多次记录、历史补签和确认删除。
 
 ## 使用
 
@@ -11,6 +11,15 @@ python -m http.server 5173 --bind 127.0.0.1
 ```
 
 然后打开 `http://127.0.0.1:5173`。每次使用相同的浏览器、地址和端口。
+
+## 补签
+
+在日历中选择过去的日期，点击记录标题右侧的「＋ 补签」，填写实际发生的时间后确认。时间精确到分钟，秒数保存为 `00`，不预填默认时间。
+
+- 今天和未来日期不显示补签入口；绿色打卡按钮始终记录当前时间。
+- 一天可以补签多条，按实际发生时间倒序排列，并显示「补签」标记。
+- 保存后停留在所选日期；取消不保存，保存失败会保留输入以便重试。
+- 使用原有存储键，补签记录增加 `source: "manual"` 字段；旧记录无需迁移，按正常打卡显示。
 
 ## 数据与隐私
 
@@ -29,7 +38,7 @@ python -m http.server 5173 --bind 127.0.0.1
 node --test tests/calendar.test.cjs
 ```
 
-测试覆盖周一起始月历、闰年与跨年、本地日期与午夜、多条记录排序、数据校验及存储错误。
+测试覆盖周一起始月历、闰年与跨年、本地日期与午夜、多条记录排序、数据校验、存储错误、补签日期时间校验及旧数据兼容。
 
 ### 浏览器验收（可选）
 
@@ -38,6 +47,7 @@ node --test tests/calendar.test.cjs
 ```powershell
 npx --yes --package @playwright/cli playwright-cli -s=record-check open http://127.0.0.1:5173
 npx --yes --package @playwright/cli playwright-cli -s=record-check run-code --filename tests/browser-check.js
+npx --yes --package @playwright/cli playwright-cli -s=record-check run-code --filename tests/backfill-browser-check.js
 npx --yes --package @playwright/cli playwright-cli -s=record-check close
 ```
 

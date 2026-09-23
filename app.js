@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const { STORAGE_KEY, dateKey, formatTime, monthCells, recordsForDate, loadRecords, saveRecords } = window.DiaryCore;
+  const { backfillTimestamp, STORAGE_KEY, dateKey, formatTime, monthCells, recordsForDate, loadRecords, saveRecords } = window.DiaryCore;
   const $ = id => document.getElementById(id);
   const now = new Date();
   let viewYear = now.getFullYear();
@@ -11,6 +11,8 @@
   let readable = true;
   let busy = false;
   let pendingDelete = null;
+  let pendingBackfill = null;
+  let backfillBusy = false;
   let toastTimer;
   const monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
   const trashIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5m4-5v5"/></svg>';
@@ -75,6 +77,8 @@
     const items = recordsForDate(records, selectedDate);
     $('record-count').textContent = readable ? `${items.length} 条记录` : '暂不可用';
     $('empty-state').hidden = items.length > 0 || !readable;
+    $('backfill').hidden = selectedDate >= today;
+    $('backfill').disabled = !readable || backfillBusy;
     const fragment = document.createDocumentFragment();
     for (const record of items) {
       const row = document.createElement('li');
@@ -87,7 +91,8 @@
       time.textContent = formatTime(record.timestamp);
       const note = document.createElement('span');
       note.className = 'record-note';
-      note.textContent = '已记录';
+      note.textContent = record.source === 'manual' ? '补签' : '已记录';
+      if (record.source === 'manual') note.classList.add('manual');
       const remove = document.createElement('button');
       remove.type = 'button';
       remove.className = 'icon-button delete-button';
@@ -154,6 +159,68 @@
       $('checkin').disabled = !readable;
       $('checkin-label').textContent = '打卡 · 记录当前时间';
     }, 1500);
+  });
+  function backfillError(message, invalidTime = false) {
+    $('backfill-error').textContent = message;
+    $('backfill-error').hidden = false;
+    $('backfill-time').setAttribute('aria-invalid', String(invalidTime));
+  }
+  $('backfill').addEventListener('click', () => {
+    if (!readable || selectedDate >= dateKey(Date.now())) return;
+    pendingBackfill = selectedDate;
+    $('backfill-form').reset();
+    $('backfill-error').hidden = true;
+    $('backfill-time').removeAttribute('aria-invalid');
+    $('confirm-backfill').disabled = false;
+    const [year, month, day] = pendingBackfill.split('-').map(Number);
+    $('backfill-date').textContent = `${year}年${month}月${day}日`;
+    $('backfill-date').dateTime = pendingBackfill;
+    $('backfill-dialog').showModal();
+  });
+  $('cancel-backfill').addEventListener('click', () => $('backfill-dialog').close());
+  $('backfill-dialog').addEventListener('close', () => {
+    if (!$('backfill-dialog').open) pendingBackfill = null;
+  });
+  $('backfill-time').addEventListener('input', () => {
+    $('backfill-error').hidden = true;
+    $('backfill-time').removeAttribute('aria-invalid');
+  });
+  $('backfill-form').addEventListener('submit', event => {
+    event.preventDefault();
+    if (backfillBusy || !pendingBackfill || !$('backfill-dialog').open) return;
+    let timestamp;
+    try {
+      timestamp = backfillTimestamp(pendingBackfill, $('backfill-time').value);
+    } catch (error) {
+      backfillError(error.message, true);
+      $('backfill-time').focus();
+      return;
+    }
+    backfillBusy = true;
+    $('confirm-backfill').disabled = true;
+    try {
+      // Reload first to preserve changes from other tabs and legacy records.
+      if (!readLatest()) {
+        backfillError('无法读取已有记录，本次补签未保存。请检查浏览器存储权限后重试。');
+        render();
+        return;
+      }
+      const id = window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      if (!commit([...records, { id, timestamp, source: 'manual' }])) {
+        backfillError('保存失败，本次补签未生效。请检查浏览器存储权限或空间后重试。');
+        return;
+      }
+      // Keep viewing the selected historical day instead of jumping to today.
+      pendingBackfill = null;
+      $('backfill-dialog').close();
+      render();
+      notify(`已补签 · ${formatTime(timestamp)}`);
+    } finally {
+      backfillBusy = false;
+      $('confirm-backfill').disabled = false;
+      $('backfill').disabled = !readable;
+      if (!$('backfill-dialog').open) $('backfill').focus({ preventScroll: true });
+    }
   });
   $('cancel-delete').addEventListener('click', () => $('delete-dialog').close());
   $('delete-dialog').addEventListener('close', () => { pendingDelete = null; });
