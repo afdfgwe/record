@@ -15,16 +15,16 @@ button:focus-visible { outline: 3px solid #91ad83; outline-offset: 3px; }
 button:disabled { cursor: default; opacity: .65; }
 svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 [hidden] { display: none !important; }
-.app { max-width: 552px; margin: 0 auto; padding: 55px 24px 28px; }
-.page-header { text-align: center; margin-bottom: 33px; }
-.brand-mark { width: 45px; height: 45px; display: grid; place-items: center; margin: 0 auto 17px; border-radius: 15px; color: var(--green); background: #e9eee3; transform: rotate(-5deg); }
+.app { max-width: 552px; margin: 0 auto; padding: 24px 24px 28px; }
+.page-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.header-brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.brand-mark { width: 36px; height: 36px; display: grid; place-items: center; margin: 0; border-radius: 12px; color: var(--green); background: #e9eee3; transform: rotate(-5deg); }
 .brand-mark svg { transform: rotate(5deg); }
-.eyebrow { margin: 0 0 9px; color: #84917e; font-size: 10px; letter-spacing: 4px; }
-h1 { margin: 0; font-size: 31px; font-weight: 600; letter-spacing: 3px; }
+h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 2px; }
 .title-dot { color: #88a076; }
-.subtitle { margin: 11px 0 0; color: var(--muted); font-size: 12px; letter-spacing: 1px; }
+.subtitle { margin: 0; color: var(--muted); font-size: 12px; letter-spacing: 1px; }
 .calendar-card { padding: 25px 23px 16px; background: #fff; border: 1px solid var(--border); border-radius: 20px; box-shadow: 0 5px 24px #34433204; }
-.calendar-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 23px; }
+.calendar-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
 .month-heading h2 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: .5px; font-variant-numeric: tabular-nums; }
 .month-heading p { margin: 5px 0 0; font-size: 9px; letter-spacing: 2px; color: #9ba296; }
 .calendar-controls { display: flex; align-items: center; gap: 3px; }
@@ -32,7 +32,7 @@ h1 { margin: 0; font-size: 31px; font-weight: 600; letter-spacing: 3px; }
 .icon-button svg { width: 18px; height: 18px; }
 .today-button { height: 36px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 11px; color: #6b7866; background: #fafbf8; }
 .weekdays, .calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
-.weekdays { margin-bottom: 10px; color: #99a092; text-align: center; font-size: 11px; }
+.weekdays { margin-bottom: 8px; color: #99a092; text-align: center; font-size: 11px; }
 .weekdays span { padding: 4px 0; }
 .calendar-days { row-gap: 3px; }
 .day { position: relative; justify-self: center; width: 44px; max-width: 100%; height: 45px; padding: 0 0 3px; background: none; border: 1px solid transparent; border-radius: 12px; font-size: 13px; font-weight: 450; color: #53604f; font-variant-numeric: tabular-nums; }
@@ -40,7 +40,7 @@ h1 { margin: 0; font-size: 31px; font-weight: 600; letter-spacing: 3px; }
 .day.today { border-color: #7f9873; color: #4f6d44; font-weight: 650; }
 .day.selected { background: #eaf0e3; color: #45633d; font-weight: 650; }
 .day.has-records::after { content: ""; position: absolute; bottom: 5px; left: calc(50% - 2px); width: 4px; height: 4px; border-radius: 50%; background: #78936a; }
-.calendar-legend { display: flex; align-items: center; gap: 6px; border-top: 1px solid #f0f2ed; padding-top: 15px; margin-top: 17px; font-size: 10px; color: #9aa292; }
+.calendar-legend { display: flex; align-items: center; gap: 6px; border-top: 1px solid #f0f2ed; padding-top: 10px; margin-top: 12px; font-size: 10px; color: #9aa292; }
 .legend-dot { width: 4px; height: 4px; border-radius: 50%; background: #78936a; }
 .legend-today { margin-left: auto; font-size: 9px; color: #a8afa2; }
 .records-section { margin: 26px 3px 0; }
@@ -60,6 +60,7 @@ h1 { margin: 0; font-size: 31px; font-weight: 600; letter-spacing: 3px; }
 .record-note { font-size: 10px; color: #9aa391; margin-left: auto; }
 .delete-button { color: #a4ad9b; }
 .delete-button svg { width: 15px; height: 15px; }
+.checkin-section { margin-top: 14px; }
 .checkin-button { width: 100%; height: 53px; border: 1px solid #54745e; border-radius: 13px; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; gap: 9px; font-size: 14px; letter-spacing: 1px; box-shadow: 0 4px 10px #54745e14; transition: background .15s, transform .15s; }
 .checkin-button svg { width: 20px; height: 20px; }
 .checkin-button:active:not(:disabled) { transform: translateY(1px); }
@@ -88,14 +89,28 @@ dialog p { font-size: 13px; line-height: 1.8; color: #7f8979; }
   .delete-button:hover { color: #a26157; background: #f6eae4; }
 }
 @media (max-width: 420px) {
-  .app { padding: 30px 18px 23px; }
-  .page-header { margin-bottom: 25px; }
-  .calendar-card { padding: 20px 14px 14px; border-radius: 17px; }
-  .calendar-toolbar { margin-bottom: 18px; }
+  .app { padding: 16px 18px 23px; }
+  h1 { font-size: 22px; }
+  .subtitle { font-size: 10px; letter-spacing: 0; }
+  .calendar-card { padding: 16px 14px 12px; border-radius: 17px; }
   .month-heading h2 { font-size: 18px; }
   .day { height: 43px; border-radius: 10px; }
   .calendar-controls { gap: 0; }
   .icon-button { width: 32px; }
   .records-section { margin-top: 23px; }
+}
+@media (max-width: 359px) {
+  .subtitle { display: none; }
+}
+/* Keep the primary action in the first screen on short portrait viewports. */
+@media (max-height: 650px) and (max-width: 600px) {
+  .app { padding-top: 12px; }
+  .page-header { margin-bottom: 12px; }
+  .calendar-card { padding-top: 12px; padding-bottom: 10px; }
+  .calendar-toolbar { margin-bottom: 8px; }
+  .weekdays { margin-bottom: 4px; }
+  .day { height: 40px; }
+  .calendar-legend { padding-top: 8px; margin-top: 8px; }
+  .checkin-section { margin-top: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }

@@ -14,9 +14,10 @@
 <body>
   <main class="app">
     <header class="page-header">
-      <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 3v4m10-4v4M4 10h16M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="m9 15 2 2 4-4"/></svg></div>
-      <p class="eyebrow">留一刻，给自己</p>
-      <h1>个人记录<span class="title-dot">.</span></h1>
+      <div class="header-brand">
+        <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 3v4m10-4v4M4 10h16M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="m9 15 2 2 4-4"/></svg></div>
+        <h1>个人记录<span class="title-dot">.</span></h1>
+      </div>
       <p class="subtitle">简单记录，不必多想。</p>
     </header>
 
@@ -36,6 +37,11 @@
       <div class="calendar-legend"><span class="legend-dot"></span>有记录的一天<span class="legend-today">描边为今天</span></div>
     </section>
 
+    <section class="checkin-section" aria-label="记录当前时间">
+      <button id="checkin" class="checkin-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-8"/></svg><span id="checkin-label">打卡 · 记录当前时间</span></button>
+      <p class="checkin-hint">记录此刻，不论你正在查看哪一天</p>
+    </section>
+
     <section class="records-section" aria-labelledby="records-title">
       <div class="records-heading"><h2 id="records-title"></h2><span id="record-count" class="record-count"></span></div>
       <div id="empty-state" class="empty-state">
@@ -45,10 +51,6 @@
       <ul id="records-list" class="records-list"></ul>
     </section>
 
-    <section class="checkin-section" aria-label="记录当前时间">
-      <button id="checkin" class="checkin-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-8"/></svg><span id="checkin-label">打卡 · 记录当前时间</span></button>
-      <p class="checkin-hint">记录此刻，不论你正在查看哪一天</p>
-    </section>
     <footer><div class="privacy-label"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="10" width="12" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v2"/></svg>只在这里，只属于你</div><p>记录仅保存在当前浏览器，清除浏览器数据后会丢失。</p></footer>
   </main>
 
