@@ -22,6 +22,22 @@
         return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
     }
 
+    /**
+     * 比较两个本地日期键，返回相差的日历天数：过去为负，未来为正，今天为 0。
+     * 只把键中的年月日映射到 UTC 零点做减法，不把真实时间戳转成 UTC 日期。
+     * 这样不受点击时刻或夏令时 23/25 小时日影响；setUTCFullYear 也兼容 0～99 年。
+     * 两个参数均使用应用内部生成的有效 YYYY-MM-DD 日期键。
+     */
+    function calendarDayDifference(selectedKey, referenceKey = dateKey(Date.now())) {
+        const dayNumber = key => {
+            const [year, month, day] = key.split('-').map(Number);
+            const date = new Date(0);
+            date.setUTCFullYear(year, month - 1, day);
+            return date.getTime() / 86400000;
+        };
+        return dayNumber(selectedKey) - dayNumber(referenceKey);
+    }
+
     // 按本地时区显示 HH:mm:ss；存储的时间戳本身不携带显示时区。
     function formatTime(value) {
         const date = new Date(value);
@@ -117,6 +133,7 @@
         backfillTimestamp,
         STORAGE_KEY,
         dateKey,
+        calendarDayDifference,
         formatTime,
         monthCells,
         parseRecords,

@@ -90,7 +90,12 @@
 
         <!-- 所选日期的倒序记录列表；过去日期显示补签入口，每条记录提供确认删除。 -->
         <section class="records-section" aria-labelledby="records-title">
-            <div class="records-heading"><h2 id="records-title"></h2>
+            <div class="records-heading">
+                <!-- 相对今天的日历天数位于日期右侧；窄屏允许整组换行，不挤压补签按钮。 -->
+                <div class="records-date-heading" aria-live="polite" aria-atomic="true">
+                    <h2 id="records-title"></h2>
+                    <span id="records-relative-date" class="records-relative-date"></span>
+                </div>
                 <div class="records-actions"><span id="record-count" class="record-count"></span>
                     <button id="backfill" class="backfill-button" type="button" hidden>＋ 补签</button>
                 </div>

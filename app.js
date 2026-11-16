@@ -9,6 +9,7 @@
         backfillTimestamp,
         STORAGE_KEY,
         dateKey,
+        calendarDayDifference,
         formatTime,
         monthCells,
         recordsForDate,
@@ -113,6 +114,11 @@
         const [year, month, day] = selectedDate.split('-').map(Number);
         const dateLabel = `${month}月${day}日`;
         $('records-title').textContent = selectedDate === today ? `今天 · ${dateLabel}` : `${year}年${dateLabel}`;
+        // 相对天数按所选日期与本地“今天”计算，每次点击或跨午夜刷新时同步更新。
+        const dayOffset = calendarDayDifference(selectedDate, today);
+        $('records-relative-date').textContent = dayOffset === 0
+            ? '（今天）'
+            : `（${Math.abs(dayOffset)}天${dayOffset < 0 ? '之前' : '之后'}）`;
         const items = recordsForDate(records, selectedDate);
         $('record-count').textContent = readable ? `${items.length} 条记录` : '暂不可用';
         $('empty-state').hidden = items.length > 0 || !readable;

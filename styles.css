@@ -1104,3 +1104,22 @@ dialog .form-error {
         font-size: 14px;
     }
 }
+
+/* 日期与相对天数保持相邻；空间不足时自然换行，不影响日历和首屏打卡区域。 */
+.records-date-heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-width: 0;
+    max-width: 100%;
+}
+.records-date-heading h2 {
+    white-space: nowrap;
+}
+.records-relative-date {
+    color: #7b8773;
+    font-size: 11px;
+    line-height: 1.7;
+    white-space: nowrap;
+}
