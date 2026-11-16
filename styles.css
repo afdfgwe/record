@@ -39,9 +39,11 @@ h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 2px; }
 .day.outside { color: #c8cdc4; }
 .day.today { border-color: #7f9873; color: #4f6d44; font-weight: 650; }
 .day.selected { background: #eaf0e3; color: #45633d; font-weight: 650; }
-.day.has-records::after { content: ""; position: absolute; bottom: 5px; left: calc(50% - 2px); width: 4px; height: 4px; border-radius: 50%; background: #78936a; }
+/* 使用边框绘制绿色对钩，不依赖字体字形；仅有记录的日期显示，不改变日期格尺寸。 */
+.day.has-records::after, .legend-check { width: 6px; height: 10px; border: solid var(--green); border-width: 0 2px 2px 0; }
+.day.has-records::after { content: ""; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%) rotate(45deg); pointer-events: none; }
 .calendar-legend { display: flex; align-items: center; gap: 6px; border-top: 1px solid #f0f2ed; padding-top: 10px; margin-top: 12px; font-size: 10px; color: #9aa292; }
-.legend-dot { width: 4px; height: 4px; border-radius: 50%; background: #78936a; }
+.legend-check { flex: 0 0 6px; margin: 0 3px; transform: translateY(-2px) rotate(45deg); }
 .legend-today { margin-left: auto; font-size: 9px; color: #a8afa2; }
 .records-section { margin: 26px 3px 0; }
 .records-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
