@@ -95,10 +95,6 @@ h1 {
     letter-spacing: 2px;
 }
 
-.title-dot {
-    color: #88a076;
-}
-
 .subtitle {
     margin: 0;
     color: var(--muted);
